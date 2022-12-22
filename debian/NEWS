@@ -1,0 +1,9 @@
+golang-go.crypto (1:0.0~git20170407.0.55a552f+REALLY.0.0~git20161012.0.5f31782-1) unstable; urgency=medium
+
+  The Go SSH library (x/crypto/ssh) by default did not verify host keys,
+  facilitating man-in-the-middle attacks. This commit changes the default
+  behaviour to require explicitly registering a hostkey verification mechanism.
+
+  Further Information: https://security-tracker.debian.org/tracker/CVE-2017-3204
+
+ -- Michael Lustfield <michael@lustfield.net>  Wed, 26 Apr 2017 01:53:07 -0500

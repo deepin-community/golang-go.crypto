@@ -1,0 +1,36 @@
+From: Roger Shimizu <rosh@debian.org>
+Date: Thu, 25 Jun 2020 02:44:22 +0900
+Subject: Skip test fails on reproducible builds
+
+Reported upstream:
+- https://github.com/golang/go/issues/39831
+- https://github.com/golang/go/issues/39910
+---
+ openpgp/clearsign/clearsign_test.go | 1 +
+ ssh/test/session_test.go            | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/openpgp/clearsign/clearsign_test.go b/openpgp/clearsign/clearsign_test.go
+index 051b8f1..b1aae1f 100644
+--- a/openpgp/clearsign/clearsign_test.go
++++ b/openpgp/clearsign/clearsign_test.go
+@@ -135,6 +135,7 @@ func (qr *quickRand) Read(p []byte) (int, error) {
+ }
+ 
+ func TestMultiSign(t *testing.T) {
++	t.Skip()	// This fails on reproducible builds
+ 	if testing.Short() {
+ 		t.Skip("skipping long test in -short mode")
+ 	}
+diff --git a/ssh/test/session_test.go b/ssh/test/session_test.go
+index d66509b..6807b7d 100644
+--- a/ssh/test/session_test.go
++++ b/ssh/test/session_test.go
+@@ -84,6 +84,7 @@ func TestRunCommandStdin(t *testing.T) {
+ }
+ 
+ func TestRunCommandStdinError(t *testing.T) {
++	t.Skip()	// This fails on reproducible builds
+ 	server := newServer(t)
+ 	defer server.Shutdown()
+ 	conn := server.Dial(clientConfig())
