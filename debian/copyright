@@ -1,15 +1,16 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Source: https://golang.org/x/crypto
 Upstream-Name: golang.org/x/crypto
 Upstream-Contact: https://github.com/golang/go/issues
-Source: https://golang.org/x/crypto
 
 Files: *
-Copyright: 2009-2018 The Go Authors
+Copyright: 2009 The Go Authors
 License: BSD-3-Clause
 
 Files: debian/*
 Copyright: 2013 Tonnerre Lombard <tonnerre@ancient-solutions.com>
            2018 Dr. Tobias Quathamer <toddy@debian.org>
+           2020 Anthony Fok <foka@debian.org>
 License: BSD-3-Clause
 
 License: BSD-3-Clause

@@ -11,7 +11,6 @@ import (
 	crypto_rand "crypto/rand"
 	"errors"
 	"io"
-	"io/ioutil"
 	"math/rand"
 	"net"
 	"testing"
@@ -37,7 +36,8 @@ func dial(handler serverType, t *testing.T) *Client {
 
 		conn, chans, reqs, err := NewServerConn(c1, &conf)
 		if err != nil {
-			t.Fatalf("Unable to handshake: %v", err)
+			t.Errorf("Unable to handshake: %v", err)
+			return
 		}
 		go DiscardRequests(reqs)
 
@@ -531,7 +531,7 @@ func sendSignal(signal string, ch Channel, t *testing.T) {
 
 func discardHandler(ch Channel, t *testing.T) {
 	defer ch.Close()
-	io.Copy(ioutil.Discard, ch)
+	io.Copy(io.Discard, ch)
 }
 
 func echoHandler(ch Channel, in <-chan *Request, t *testing.T) {
@@ -606,7 +606,7 @@ func TestClientWriteEOF(t *testing.T) {
 	}
 	stdin.Close()
 
-	res, err := ioutil.ReadAll(stdout)
+	res, err := io.ReadAll(stdout)
 	if err != nil {
 		t.Fatalf("Read failed: %v", err)
 	}
@@ -618,7 +618,7 @@ func TestClientWriteEOF(t *testing.T) {
 
 func simpleEchoHandler(ch Channel, in <-chan *Request, t *testing.T) {
 	defer ch.Close()
-	data, err := ioutil.ReadAll(ch)
+	data, err := io.ReadAll(ch)
 	if err != nil {
 		t.Errorf("handler read error: %v", err)
 	}
@@ -648,10 +648,12 @@ func TestSessionID(t *testing.T) {
 		User:            "user",
 	}
 
+	srvErrCh := make(chan error, 1)
 	go func() {
 		conn, chans, reqs, err := NewServerConn(c1, serverConf)
+		srvErrCh <- err
 		if err != nil {
-			t.Fatalf("server handshake: %v", err)
+			return
 		}
 		serverID <- conn.SessionID()
 		go DiscardRequests(reqs)
@@ -660,10 +662,12 @@ func TestSessionID(t *testing.T) {
 		}
 	}()
 
+	cliErrCh := make(chan error, 1)
 	go func() {
 		conn, chans, reqs, err := NewClientConn(c2, "", clientConf)
+		cliErrCh <- err
 		if err != nil {
-			t.Fatalf("client handshake: %v", err)
+			return
 		}
 		clientID <- conn.SessionID()
 		go DiscardRequests(reqs)
@@ -671,6 +675,14 @@ func TestSessionID(t *testing.T) {
 			ch.Reject(Prohibited, "")
 		}
 	}()
+
+	if err := <-srvErrCh; err != nil {
+		t.Fatalf("server handshake: %v", err)
+	}
+
+	if err := <-cliErrCh; err != nil {
+		t.Fatalf("client handshake: %v", err)
+	}
 
 	s := <-serverID
 	c := <-clientID
@@ -778,5 +790,56 @@ func TestHostKeyAlgorithms(t *testing.T) {
 	_, _, _, err = NewClientConn(c2, "", clientConf)
 	if err == nil {
 		t.Fatal("succeeded connecting with unknown hostkey algorithm")
+	}
+}
+
+func TestServerClientAuthCallback(t *testing.T) {
+	c1, c2, err := netPipe()
+	if err != nil {
+		t.Fatalf("netPipe: %v", err)
+	}
+	defer c1.Close()
+	defer c2.Close()
+
+	userCh := make(chan string, 1)
+
+	serverConf := &ServerConfig{
+		NoClientAuth: true,
+		NoClientAuthCallback: func(conn ConnMetadata) (*Permissions, error) {
+			userCh <- conn.User()
+			return nil, nil
+		},
+	}
+	const someUsername = "some-username"
+
+	serverConf.AddHostKey(testSigners["ecdsa"])
+	clientConf := &ClientConfig{
+		HostKeyCallback: InsecureIgnoreHostKey(),
+		User:            someUsername,
+	}
+
+	go func() {
+		_, chans, reqs, err := NewServerConn(c1, serverConf)
+		if err != nil {
+			t.Errorf("server handshake: %v", err)
+			userCh <- "error"
+			return
+		}
+		go DiscardRequests(reqs)
+		for ch := range chans {
+			ch.Reject(Prohibited, "")
+		}
+	}()
+
+	conn, _, _, err := NewClientConn(c2, "", clientConf)
+	if err != nil {
+		t.Fatalf("client handshake: %v", err)
+		return
+	}
+	conn.Close()
+
+	got := <-userCh
+	if got != someUsername {
+		t.Errorf("username = %q; want %q", got, someUsername)
 	}
 }

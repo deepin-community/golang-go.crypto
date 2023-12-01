@@ -1,0 +1,10 @@
+To avoid circular dependency, instead of depending on golang-golang-x-net-dev,
+a copy of "golang.org/x/net/idna" is placed in debian/go/src and vendored
+at build time; see the execute_after_dh_auto_configure target in debian/rules.
+
+To keep the vendored copy up-to-date, please run the script
+
+    debian/update-vendored-golang-x-net-idna.sh
+
+before packaging a new upstream version, especially if the version of
+golang.org/x/net specified in go.mod is updated.

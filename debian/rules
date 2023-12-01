@@ -1,10 +1,10 @@
 #!/usr/bin/make -f
 
-# Uncomment this to turn on verbose mode.
-export DH_VERBOSE=1
-
 %:
-	dh $@ --buildsystem=golang --with=golang
+	dh $@ --builddirectory=_build --buildsystem=golang
+
+execute_after_dh_auto_configure:
+	cp -av $(CURDIR)/debian/go/src _build/src/golang.org/x/crypto/vendor
 
 override_dh_auto_install:
 	dh_auto_install -- --no-binaries
