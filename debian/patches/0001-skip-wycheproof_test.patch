@@ -4,22 +4,19 @@ Subject: Skip wycheproof_test.go to prevent network access
 
 Origin: vendor
 Forwarded: not-needed
-Last-Update: 2020-02-26
+Last-Update: 2020-02-26, 2023-10-09
 ---
  internal/wycheproof/wycheproof_test.go | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/internal/wycheproof/wycheproof_test.go b/internal/wycheproof/wycheproof_test.go
-index 69c6117..551477b 100644
 --- a/internal/wycheproof/wycheproof_test.go
 +++ b/internal/wycheproof/wycheproof_test.go
-@@ -29,6 +29,9 @@ const wycheproofModVer = "v0.0.0-20191219022705-2196000605e4"
+@@ -29,6 +29,8 @@
  var wycheproofTestVectorsDir string
  
  func TestMain(m *testing.M) {
 +	log.Printf("skipping test to prevent network access during Debian build")
 +	os.Exit(0)
-+
- 	if _, err := exec.LookPath("go"); err != nil {
- 		log.Printf("skipping test because 'go' command is unavailable: %v", err)
- 		os.Exit(0)
+ 	flag.Parse()
+ 	if flag.Lookup("test.short").Value.(flag.Getter).Get().(bool) {
+ 		log.Println("skipping test that downloads testdata via 'go mod download' in short mode")

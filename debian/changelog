@@ -1,3 +1,79 @@
+golang-go.crypto (1:0.14.0-1) unstable; urgency=medium
+
+  * New upstream version 0.14.0
+  * Bump versioned dependencies as per go.mod
+
+ -- Anthony Fok <foka@debian.org>  Wed, 01 Nov 2023 02:00:40 -0600
+
+golang-go.crypto (1:0.13.0-1) unstable; urgency=medium
+
+  * New upstream version 0.13.0
+  * Bump versioned dependencies as per go.mod
+
+ -- Anthony Fok <foka@debian.org>  Thu, 12 Oct 2023 01:27:41 -0600
+
+golang-go.crypto (1:0.12.0-1) unstable; urgency=medium
+
+  * New upstream version 0.12.0
+  * Bump versioned dependencies as per go.mod
+  * Refresh Debian patches
+
+ -- Anthony Fok <foka@debian.org>  Mon, 09 Oct 2023 18:04:57 -0600
+
+golang-go.crypto (1:0.10.0-1) unstable; urgency=medium
+
+  * New upstream version 0.10.0
+  * Add debian/update-vendored-golang-x-net-idna.sh script
+    to facilitate the download of golang.org/x/net/idna for vendoring
+    to avoid circular dependency with golang-golang-x-net-dev;
+    see debian/README.source for details.
+  * debian/rules: Add execute_after_dh_auto_configure target
+    to copy golang.org/x/net into vendor directory during build time
+  * Commit our local copy of golang.org/x/net/idna v0.10.0
+    downloaded with debian/update-vendored-golang-x-net-idna.sh
+  * Bump versioned dependencies as per go.mod,
+    removing dependency on golang-golang-x-net-dev, but
+    adding dependency on golang-golang-x-text-dev
+    which is needed by our vendored copy of golang.org/x/net/idna.
+
+ -- Anthony Fok <foka@debian.org>  Thu, 21 Sep 2023 04:55:01 -0600
+
+golang-go.crypto (1:0.4.0-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 0.4.0
+  * Update Standards-Version to 4.6.2 (no changes)
+
+ -- Shengjing Zhu <zhsj@debian.org>  Mon, 02 Jan 2023 23:01:47 +0800
+
+golang-go.crypto (1:0.1.0-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Anthony Fok ]
+  * Build-depend explicitly on golang-any (>= 2:1.17~) as per go.mod
+    to facilitate backports.
+  * Remove unneeded dependency on ${shlibs:Depends}
+
+  [ Shengjing Zhu ]
+  * Switch to upstream tag version in uscan
+  * New upstream version 0.1.0
+
+ -- Shengjing Zhu <zhsj@debian.org>  Wed, 26 Oct 2022 16:03:49 +0800
+
+golang-go.crypto (1:0.0~git20220829.c86fa9a-1) unstable; urgency=medium
+
+  * New upstream version 0.0~git20220829.c86fa9a
+  * Bump dependency: golang-golang-x-net-dev (>= 1:0.0+git20211112.69e39ba)
+  * Reorder fields in debian/control and debian/copyright
+  * Use dh-sequence-golang instead of dh-golang and --with=golang
+  * debian/rules: Invoke dh with --builddirectory=_build
+  * Bump Standards-Version to 4.6.1 (no change)
+  * debian/golang-golang-x-crypto-dev.docs: Remove AUTHORS and CONTRIBUTORS
+    which were deleted upstream; see https://github.com/golang/go/issues/53961
+
+ -- Anthony Fok <foka@debian.org>  Mon, 05 Sep 2022 06:00:18 -0600
+
 golang-go.crypto (1:0.0~git20220315.3147a52-1) unstable; urgency=medium
 
   * Team upload.
