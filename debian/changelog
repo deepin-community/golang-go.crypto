@@ -1,3 +1,10 @@
+golang-go.crypto (1:0.14.0-1deepin11) unstable; urgency=medium
+
+  * Fix CVE-2025-47914: Fix panic on malformed constraint in ssh/agent
+    (CWE-125)
+
+ -- Anthony Fok <node@openclaw-bb88cc8c6-l49dw>  Mon, 16 Mar 2026 16:17:20 +0800
+
 golang-go.crypto (1:0.14.0-1) unstable; urgency=medium
 
   * New upstream version 0.14.0
