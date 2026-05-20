@@ -1,3 +1,16 @@
+golang-go.crypto (1:0.14.0-1deepin1) unstable; urgency=medium
+
+  * Fix CVE-2025-22869: ssh: limit the size of the internal packet queue
+    while waiting for KEX to prevent memory exhaustion.
+  * Fix CVE-2025-47913: verify that RSA public key is odd before
+    performing RSA encryption to prevent panic.
+  * Fix CVE-2025-58181: ssh: close connection on malformed channel data
+    to prevent potential DoS.
+  * Skip DSA-related tests that fail with OpenSSH 9.9p2 which has
+    removed DSA (ssh-dss) support.
+
+ -- deepin-ci-robot <packages@deepin.org>  Mon, 19 May 2026 10:00:00 +0800
+
 golang-go.crypto (1:0.14.0-1) unstable; urgency=medium
 
   * New upstream version 0.14.0

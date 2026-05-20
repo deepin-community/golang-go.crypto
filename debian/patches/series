@@ -1,2 +1,6 @@
 0001-skip-wycheproof_test.patch
 0002-Skip-test-fails-on-reproducible-builds.patch
+0003-CVE-2025-22869.patch
+0004-CVE-2025-47913.patch
+0005-CVE-2025-58181.patch
+0006-skip-dsa-tests.patch
